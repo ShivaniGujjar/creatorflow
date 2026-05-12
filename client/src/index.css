@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+
+
+@layer base {
+  body {
+    /* Paper tint and halftone dot background */
+    @apply bg-[#FDFCF8] text-black antialiased;
+    background-image: radial-gradient(rgba(0,0,0,0.05) 2px, transparent 0);
+    background-size: 25px 25px;
+  }
+}
+
+/* Halftone Texture Overlay for Boxes */
+.halftone-bg {
+  background-image: radial-gradient(#000 10%, transparent 11%);
+  background-size: 4px 4px;
+  opacity: 0.05;
+}
+
+/* Comic Button Hover - Pop Effect */
+.btn-pop {
+  @apply transition-all duration-100 active:translate-x-1 active:translate-y-1 active:shadow-none;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-black border-2 border-[#FDFCF8];
+}
