@@ -1,60 +1,122 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Zap } from 'lucide-react';
+import { Zap, ShieldCheck, UserPlus, KeyRound } from 'lucide-react';
+
+// Vercel deployment ke liye Base URL dynamic hona chahiye
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function Auth({ onAuthSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    
     const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+    
     try {
-      const res = await axios.post(`http://localhost:5000${endpoint}`, formData);
+      // Dynamic URL using backticks
+      const res = await axios.post(`${API_BASE_URL}${endpoint}`, formData);
+      
+      // Tokens and user data persistence
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
+      
       onAuthSuccess(res.data.user);
     } catch (err) {
-      alert(err.response?.data?.error || "Auth Failed");
+      console.error("Auth Error:", err);
+      alert(err.response?.data?.error || "Authentication Protocol Failed. Check connection.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center mt-20">
-      <div className="bg-white border-4 border-black p-10 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] max-w-md w-full">
-        <h2 className="text-3xl font-black uppercase mb-6 italic text-[#E63946] flex items-center gap-2">
-          <Zap className="fill-[#E63946]" /> {isLogin ? 'Access Portal' : 'Join Agency'}
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
-            <input 
-              className="w-full border-4 border-black p-3 font-bold outline-none focus:bg-yellow-100"
-              placeholder="Name" 
-              onChange={(e) => setFormData({...formData, name: e.target.value})} 
-            />
-          )}
-          <input 
-            className="w-full border-4 border-black p-3 font-bold outline-none focus:bg-yellow-100"
-            placeholder="Email" 
-            type="email"
-            onChange={(e) => setFormData({...formData, email: e.target.value})} 
-          />
-          <input 
-            className="w-full border-4 border-black p-3 font-bold outline-none focus:bg-yellow-100"
-            placeholder="Password" 
-            type="password"
-            onChange={(e) => setFormData({...formData, password: e.target.value})} 
-          />
-          <button className="w-full bg-black text-white py-4 font-black uppercase border-4 border-black shadow-[4px_4px_0px_0px_rgba(230,57,70,1)] active:shadow-none active:translate-x-1 active:translate-y-1">
-            {isLogin ? 'Login' : 'Create Account'}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#FDFCF8] p-4 relative overflow-hidden font-sans">
+      {/* Background HUD Grid */}
+      <div className="fixed inset-0 bg-[radial-gradient(#362F4F_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.03] pointer-events-none" />
+
+      <div className="relative w-full max-w-md">
+        
+        {/* Main Auth Card */}
+        <div className="relative bg-white border border-gray-100 rounded-[2.5rem] p-12 flex flex-col items-center shadow-[0_40px_80px_-20px_rgba(54,47,79,0.1)] transition-all">
+          
+          {/* Header Section */}
+          <div className="w-full mb-10 text-center">
+            <div className="inline-flex bg-[#E4FF30] text-[#362F4F] p-4 rounded-2xl mb-5 shadow-sm">
+              {isLogin ? <ShieldCheck size={28} strokeWidth={2.5} /> : <UserPlus size={28} strokeWidth={2.5} />}
+            </div>
+            <div className="text-[10px] font-black uppercase text-[#362F4F]/30 tracking-[0.4em] mb-2 italic">
+              Terminal Access
+            </div>
+            <h2 className="text-4xl font-[1000] uppercase italic tracking-tighter text-[#362F4F] leading-none">
+              {isLogin ? 'Access' : 'Join'} <span className="text-[#008BFF]">{isLogin ? 'Portal' : 'Agency'}</span>
+            </h2>
+          </div>
+
+          <form onSubmit={handleSubmit} className="w-full space-y-6">
+            {!isLogin && (
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-black text-[#362F4F]/40 uppercase tracking-widest ml-4 italic">Agent_Name</label>
+                <input 
+                  className="w-full bg-[#FDFCF8] border border-gray-100 p-4 rounded-2xl font-bold text-sm outline-none focus:bg-white focus:border-[#008BFF] focus:ring-4 focus:ring-[#008BFF]/5 transition-all placeholder:text-gray-200"
+                  placeholder="ENTER NAME" 
+                  autoComplete="off"
+                  required
+                  onChange={(e) => setFormData({...formData, name: e.target.value})} 
+                />
+              </div>
+            )}
+            
+            <div className="space-y-1.5">
+              <label className="text-[9px] font-black text-[#362F4F]/40 uppercase tracking-widest ml-4 italic">Email Address</label>
+              <input 
+                className="w-full bg-[#FDFCF8] border border-gray-100 p-4 rounded-2xl font-bold text-sm outline-none focus:bg-white focus:border-[#008BFF] focus:ring-4 focus:ring-[#008BFF]/5 transition-all placeholder:text-gray-200"
+                placeholder="NAME@AGENCY.COM" 
+                type="email"
+                autoComplete="email"
+                required
+                onChange={(e) => setFormData({...formData, email: e.target.value})} 
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[9px] font-black text-[#362F4F]/40 uppercase tracking-widest ml-4 italic">Secure Password</label>
+              <input 
+                className="w-full bg-[#FDFCF8] border border-gray-100 p-4 rounded-2xl font-bold text-sm outline-none focus:bg-white focus:border-[#008BFF] focus:ring-4 focus:ring-[#008BFF]/5 transition-all placeholder:text-gray-200"
+                placeholder="••••••••" 
+                type="password"
+                autoComplete="current-password"
+                required
+                onChange={(e) => setFormData({...formData, password: e.target.value})} 
+              />
+            </div>
+
+            <button 
+              disabled={loading}
+              className={`w-full bg-[#362F4F] text-white py-5 rounded-2xl font-[1000] uppercase italic tracking-widest shadow-xl shadow-[#362F4F]/20 hover:bg-[#261CC1] hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            >
+              <KeyRound size={18} className="text-[#E4FF30]" />
+              {loading ? 'Processing...' : (isLogin ? 'Initialize Session' : 'Register Identity')}
+            </button>
+          </form>
+
+          {/* Toggle Button */}
+          <button 
+            type="button"
+            onClick={() => setIsLogin(!isLogin)}
+            className="mt-10 text-[10px] font-black uppercase tracking-[0.2em] text-[#362F4F]/20 hover:text-[#008BFF] transition-all"
+          >
+            {isLogin ? 'Need a mission? Sign Up' : 'Already an agent? Login'}
           </button>
-        </form>
-        <button 
-          onClick={() => setIsLogin(!isLogin)}
-          className="mt-6 text-xs font-black uppercase border-b-2 border-black"
-        >
-          {isLogin ? 'Need a mission? Sign Up' : 'Already an agent? Login'}
-        </button>
+        </div>
+      </div>
+      
+      {/* Sidebar Metadata Overlay */}
+      <div className="fixed bottom-8 right-8 hidden md:block opacity-20">
+        <div className="text-[10px] font-black uppercase tracking-[0.6em] text-[#362F4F]">CreatorFlow Security v3.1</div>
       </div>
     </div>
   );

@@ -1,32 +1,85 @@
 @import "tailwindcss";
 
+@theme {
+  --color-cyber-navy: #362F4F;
+  --color-cyber-neon: #E4FF30;
+  --color-cyber-blue: #008BFF;
+  --color-cyber-purple: #5B23FF;
+  --color-brand-red: #E63946;
+  --color-paper-white: #FDFCF8;
+}
 
-
+/* Base styles using CSS variables defined in @theme */
 @layer base {
   body {
-    /* Paper tint and halftone dot background */
-    @apply bg-[#FDFCF8] text-black antialiased;
-    background-image: radial-gradient(rgba(0,0,0,0.05) 2px, transparent 0);
-    background-size: 25px 25px;
+    background-color: var(--color-paper-white);
+    color: var(--color-cyber-navy);
+    font-family: sans-serif; /* Tailwind v4 handles fonts differently in layers, standard sans is safer here */
+    overflow-x: hidden;
   }
 }
 
-/* Halftone Texture Overlay for Boxes */
-.halftone-bg {
-  background-image: radial-gradient(#000 10%, transparent 11%);
-  background-size: 4px 4px;
-  opacity: 0.05;
+@layer components {
+  /* TACTICAL TEXTURES */
+  .halftone-bg {
+    background-image: radial-gradient(var(--color-cyber-navy) 0.5px, transparent 0);
+    background-size: 5px 5px;
+  }
+
+  .grid-bg {
+    background-image: radial-gradient(var(--color-cyber-navy) 0.5px, transparent 0.5px);
+    background-size: 30px 30px;
+    opacity: 0.03;
+  }
+
+  /* BUTTON SYSTEM */
+  .btn-cyber-primary {
+    background-color: var(--color-cyber-neon);
+    color: var(--color-cyber-navy);
+    border: 3px solid var(--color-cyber-navy);
+    font-weight: 1000;
+    text-transform: uppercase;
+    font-style: italic;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 6px 6px 0px 0px var(--color-cyber-navy);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-cyber-primary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0px 0px var(--color-cyber-navy);
+  }
+
+  .btn-cyber-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+
+  .btn-pop {
+    transition: all 0.2s;
+  }
+  .btn-pop:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
 }
 
-/* Comic Button Hover - Pop Effect */
-.btn-pop {
-  @apply transition-all duration-100 active:translate-x-1 active:translate-y-1 active:shadow-none;
+/* CUSTOM ANIMATIONS */
+@keyframes shimmer {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
 }
 
-/* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 10px;
+.animate-shimmer {
+  animation: shimmer 2.5s infinite linear;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-black border-2 border-[#FDFCF8];
+
+/* SCROLLBAR UTILS */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

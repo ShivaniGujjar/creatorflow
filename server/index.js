@@ -1,35 +1,41 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const connectDB = require('./config/database');
 
 dotenv.config();
 
+// Connect to Database
+connectDB();
+
 const app = express();
-app.use(cors());
+
+// 1. UPDATED CORS: Deployment ke baad Vercel ka link yahan daal dena
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:5173", // Local dev ke liye explicit address
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], // "PATCH" aur "OPTIONS" yahan hone chahiye
+  credentials: true,
+  allowedHeaders: ["Content-Type", "x-auth-token"] // Headers bhi define kar do safety ke liye
+}));
+
 app.use(express.json());
 
-// 1. Import Routes
-const authRoutes = require('./routes/authRoutes');
-const roadmapRoutes = require('./routes/roadmapRoutes');
+// Routes
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/roadmaps', require('./routes/roadmapRoutes')); 
 
-// 2. Use Routes 
-// We are leaving roadmaps OPEN (no 'auth' middleware) for now 
-// so you can keep building the frontend features.
-app.use('/api/auth', authRoutes);
-app.use('/api/roadmaps', roadmapRoutes); 
+// 2. HEALTH CHECK: Render iska use karke check karta hai ki server up hai ya nahi
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    status: 'Operational', 
+    system: 'CreatorFlow API',
+    v: '3.1' 
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 
-// 3. Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('🚀 Connected to MongoDB'))
-  .catch((err) => console.error('❌ DB Connection Error:', err));
-
-app.get('/', (req, res) => {
-  res.send('CreatorFlow API is running...');
-});
-
 app.listen(PORT, () => {
-  console.log(`Server is purring on port ${PORT}`);
+  console.log(`System Initialized on port ${PORT}`);
 });

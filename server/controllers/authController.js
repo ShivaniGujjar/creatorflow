@@ -7,12 +7,15 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     
-    // Check if user exists
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ error: "Email already exists" });
 
-    // FIX: Yahan se hashing hata di hai, User.js ka pre-save hook handle kar lega
     user = new User({ name, email, password });
+
+    // FIX: Password hash karna zaroori hai
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+
     await user.save();
     
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -23,7 +26,7 @@ exports.register = async (req, res) => {
   }
 };
 
-// LOGIN USER
+// LOGIN USER (Logic same hai, but hashing fix ke baad hi kaam karega)
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;

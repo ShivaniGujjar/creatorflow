@@ -4,27 +4,23 @@ const { PromptTemplate } = require("@langchain/core/prompts");
 const model = new ChatMistralAI({
   apiKey: process.env.MISTRAL_API_KEY,
   model: "mistral-large-latest",
-  temperature: 0.7, // Temperature thoda kam kiya accuracy ke liye
+  temperature: 0.8, 
 });
 
-const generateRoadmap = async (niche, isEvolution = false, previousTitles = []) => {
+// --- 1. ROADMAP GENERATION ---
+const generateRoadmap = async (niche, isEvolution = false, previousTitles = [], researchData = {}) => {
+  const currentDate = "May 14, 2026";
   const context = isEvolution 
-    ? `This is WEEK 2+. The user already covered: ${previousTitles.join(", ")}. Suggest advanced or trending angles.`
-    : `This is WEEK 1. Focus on foundational viral topics for the niche: ${niche}.`;
+    ? `PHASE: ADVANCED. Covered: ${previousTitles.join(", ")}.`
+    : `PHASE: FOUNDATION. Target core audience for ${niche}.`;
 
   const template = `
-    You are an expert Video Director and Content Strategist. Create a 7-day video roadmap.
+    SYSTEM TIME: ${currentDate}
+    ROLE: Elite Content Strategist.
+    GOAL: Create a 7-day video roadmap for: {niche}.
     ${context}
 
-    CRITICAL INSTRUCTION FOR VISUALS:
-    For each day, provide 4 UNIQUE shooting instructions in the 'visuals' array.
-    Vary the cinematography: Zoom, Panning, Tilting, POV, Handheld, Close-up.
-
-    STRICT JSON RULES:
-    1. Return ONLY raw JSON. No markdown, no \`\`\`json blocks.
-    2. Ensure all quotes inside strings are escaped (e.g., use \\" instead of ").
-    3. Do not include trailing commas.
-
+    Return ONLY raw JSON.
     Structure:
     {{
       "days": [
@@ -33,16 +29,11 @@ const generateRoadmap = async (niche, isEvolution = false, previousTitles = []) 
           "title": "Title",
           "hook": "Hook",
           "script": "Script",
-          "cameraAngle": "Angle Note",
-          "visuals": [
-            {{ "shotType": "Type", "description": "Order" }},
-            {{ "shotType": "Type", "description": "Order" }},
-            {{ "shotType": "Type", "description": "Order" }},
-            {{ "shotType": "Type", "description": "Order" }}
-          ]
+          "cameraAngle": "Angle",
+          "visuals": [{{ "shotType": "Type", "description": "Desc" }}]
         }}
       ],
-      "nextSuggestions": ["Topic 1", "Topic 2", "Topic 3"]
+      "nextSuggestions": ["Topic 1"]
     }}
   `;
 
@@ -50,44 +41,63 @@ const generateRoadmap = async (niche, isEvolution = false, previousTitles = []) 
     const prompt = new PromptTemplate({ template, inputVariables: ["niche"] });
     const chain = prompt.pipe(model);
     const response = await chain.invoke({ niche });
-
-    let content = response.content;
-
-    // --- ROBUST JSON CLEANING ---
-    // 1. Remove markdown backticks if present
-    content = content.replace(/```json/g, "").replace(/```/g, "").trim();
     
-    const jsonStart = content.indexOf('{');
-    const jsonEnd = content.lastIndexOf('}') + 1;
-    
-    if (jsonStart === -1) {
-        console.log("RAW CONTENT:", content);
-        throw new Error("AI Response is not JSON");
+    let content = response.content.trim();
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
     }
-
-    let jsonString = content.substring(jsonStart, jsonEnd);
-    
-    // 2. Fix potential trailing commas before closing braces/brackets
-    jsonString = jsonString.replace(/,(\s*[\]}])/g, "$1");
-
-    const parsedData = JSON.parse(jsonString);
-
-    // Ensure visuals exist
-    parsedData.days = parsedData.days.map(day => ({
-      ...day,
-      visuals: Array.isArray(day.visuals) ? day.visuals : []
-    }));
-
-    return parsedData;
-
+    throw new Error("No JSON found");
   } catch (error) {
     console.error("AI GEN ERROR:", error);
-    // Error details pinpointing
-    if (error instanceof SyntaxError) {
-        console.error("JSON Syntax Issue. Raw string was:", error.message);
-    }
-    throw new Error("AI failed to generate visual intelligence.");
+    throw new Error("AI failed to generate roadmap.");
   }
 };
 
-module.exports = { generateRoadmap };
+// --- 2. VIRAL ARCHITECT LOGIC (FIXED FOR 500 ERROR) ---
+const generateVisualHooks = async (dayData) => {
+  // Input Check
+  if (!dayData || !dayData.title) return null;
+
+  const template = `
+    You are a Viral Content Architect in 2026.
+    Topic: ${dayData.title}
+    Script Snippet: ${dayData.script || "Educational content"}
+
+    Generate 3 Viral Hooks and 2 Thumbnail Concepts.
+    Return ONLY raw JSON. No conversational text.
+    
+    Structure:
+    {{
+      "hooks": ["Hook 1", "Hook 2", "Hook 3"],
+      "thumbnails": [
+        {{ "concept": "Visual description", "overlay": "Text Overlay" }},
+        {{ "concept": "Visual description", "overlay": "Text Overlay" }}
+      ]
+    }}
+  `;
+
+  try {
+    const response = await model.invoke(template);
+    let content = response.content.trim();
+
+    // REGEX CLEANING: Isse 500 parse error kabhi nahi aayega
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const parsed = JSON.parse(jsonMatch[0]);
+      // Ensure arrays exist
+      return {
+        hooks: parsed.hooks || [],
+        thumbnails: parsed.thumbnails || []
+      };
+    }
+    
+    console.error("AI Response not in JSON format");
+    return null;
+  } catch (error) {
+    console.error("MISTRAL ARCHITECT ERROR:", error.message);
+    return null;
+  }
+};
+
+module.exports = { generateRoadmap, generateVisualHooks };
