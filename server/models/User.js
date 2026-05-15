@@ -1,41 +1,37 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true
+  },
+  password: {
+    type: String,
+    required: true
+  }
+}, {
+  timestamps: true
+});
+
+// Agar tumne controller se password hashing hata di hai aur yahan pre-save hook chahiye, toh:
 const bcrypt = require('bcryptjs');
-
-// REGISTER NEW USER
-exports.register = async (req, res) => {
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
   try {
-    const { name, email, password } = req.body;
-    
-    // Check if user exists
-    let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ error: "Email already exists" });
-
-    // FIX: Yahan se hashing hata di hai, User.js ka pre-save hook handle kar lega
-    user = new User({ name, email, password });
-    await user.save();
-    
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.status(201).json({ token, user: { id: user._id, name, email } });
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
   } catch (err) {
-    console.error("Register Error:", err);
-    res.status(500).json({ error: err.message });
+    next(err);
   }
-};
+});
 
-// LOGIN USER
-exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
-    
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
-  }
-};
+module.exports = mongoose.model('User', userSchema);
