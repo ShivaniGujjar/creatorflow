@@ -20,7 +20,7 @@ export default function HookArchitectModal({ data, onClose, loading }) {
         <div className="bg-[#362F4F] p-5 flex justify-between items-center border-b-[3px] border-[#362F4F]">
           <div className="flex items-center gap-3 text-[#E4FF30]">
             <Zap size={18} fill="currentColor" className="animate-pulse" />
-            <h2 className="font-black uppercase italic tracking-widest text-sm text-white">Viral Architect // AI Engine</h2>
+            <h2 className="font-black uppercase italic tracking-widest text-sm text-white">Viral Architect</h2>
           </div>
           <button onClick={onClose} className="text-white hover:text-[#E4FF30] transition-colors">
             <X size={24}/>

@@ -54,7 +54,7 @@ export default function Auth({ onAuthSuccess }) {
               Terminal Access
             </div>
             <h2 className="text-3xl sm:text-4xl font-[1000] uppercase italic tracking-tighter text-[#362F4F] leading-none">
-              {isLogin ? 'Access' : 'Join'} <span className="text-[#008BFF]">{isLogin ? 'Portal' : 'Agency'}</span>
+              {isLogin ? 'Access' : 'Join'} <span className="text-[#008BFF]">{isLogin ? 'Portal' : 'Portal'}</span>
             </h2>
           </div>
 
@@ -106,11 +106,13 @@ export default function Auth({ onAuthSuccess }) {
               </div>
             </div>
 
+            {/* ULTIMATE INTERACTIVE BUTTON */}
+            {/* Default state is Solid Yellow (image_ecb4db), Hover flips to Dark Navy (image_ecb4ba) */}
             <button 
               disabled={loading}
-              className={`w-full bg-[#362F4F] text-white py-4 sm:py-5 rounded-xl sm:rounded-2xl font-[1000] uppercase italic tracking-widest shadow-xl shadow-[#362F4F]/20 hover:bg-[#261CC1] hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`w-full bg-[#E4FF30] text-[#362F4F] py-4 sm:py-5 rounded-xl sm:rounded-2xl font-[1000] uppercase italic tracking-widest border-2 border-[#E4FF30] shadow-xl shadow-[#E4FF30]/10 hover:bg-[#362F4F] hover:text-[#E4FF30] hover:border-[#362F4F] hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 mt-4 group ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
-              <KeyRound size={18} className="text-[#E4FF30]" />
+              <KeyRound size={18} className="text-[#362F4F] transition-colors duration-300 group-hover:text-[#E4FF30]" />
               {loading ? 'Processing...' : (isLogin ? 'Login' : 'Register')}
             </button>
           </form>
@@ -119,7 +121,7 @@ export default function Auth({ onAuthSuccess }) {
             type="button"
             onClick={() => {
               setIsLogin(!isLogin);
-              setShowPassword(false); // Switch karte hi mask clean reset
+              setShowPassword(false);
             }}
             className="mt-6 sm:mt-10 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-[#362F4F]/20 hover:text-[#008BFF] transition-all"
           >

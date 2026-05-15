@@ -1,6 +1,26 @@
 import React from 'react';
 import { LogOut, BarChart3, LayoutDashboard, User } from 'lucide-react';
 
+// YOUR OFFICIAL BRAND NEW SEAMLESS LOGO IDENTITY
+const CreatorFlowLogo = ({ className = "w-6 h-6" }) => (
+  <svg 
+    viewBox="0 0 120 70" 
+    className={className}
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Asli C Shape aur Integrated Tactical Lightning F Bolt */}
+    <path 
+      d="M50 10H18C8 10 0 18 0 35C0 52 8 60 18 60H50V46H22C17 46 14 43 14 35C14 27 17 24 22 24H44L50 10Z" 
+      fill="#E4FF30" 
+    />
+    <path 
+      d="M72 10H110V24H82L76 38H100V52H68L62 66H48L58 42H44L60 10H72Z" 
+      fill="#E4FF30" 
+    />
+  </svg>
+);
+
 export default function Navbar({ user, logout, setView, currentView }) {
   return (
     <>
@@ -8,17 +28,18 @@ export default function Navbar({ user, logout, setView, currentView }) {
       <nav className="bg-white border-b-[2.5px] border-[#362F4F]/10 sticky top-0 z-[1000] px-4 sm:px-6 h-20 flex items-center font-sans overflow-x-hidden">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           
-          {/* LOGO */}
+          {/* LOGO SECTION */}
           <div 
             onClick={() => setView('dashboard')} 
-            className="flex items-center gap-3 sm:gap-4 cursor-pointer group transition-all active:scale-95"
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer group transition-all active:scale-95"
           >
-            <div className="bg-[#362F4F] text-[#E4FF30] w-10 h-10 flex items-center justify-center rounded-lg border-[2px] border-[#362F4F] font-[1000] text-lg italic tracking-tighter shadow-sm group-hover:rotate-3 transition-transform">
-              CF.
+            {/* FIXED: Replaced "CF." text box with your exact seamless logo token */}
+            <div className="bg-[#362F4F] w-12 h-10 sm:w-14 sm:h-10 flex items-center justify-center rounded-xl border-[2px] border-[#362F4F] p-1.5 shadow-sm group-hover:rotate-2 transition-transform">
+              <CreatorFlowLogo className="w-full h-full" />
             </div>
-            <div className="hidden sm:block leading-none pt-1">
+            <div className="hidden sm:block leading-none pt-0.5">
               <h1 className="text-xl font-[1000] uppercase italic tracking-tighter text-[#362F4F]">
-                CREATOR<span className="text-[#008BFF]">FLOW.</span>
+                CREATOR<span className="text-[#3A9AFF]">FLOW.</span>
               </h1>
             </div>
           </div>
@@ -28,6 +49,7 @@ export default function Navbar({ user, logout, setView, currentView }) {
             {/* Desktop Only Tab Switcher */}
             <div className="hidden md:flex items-center border-[2px] border-[#362F4F] rounded-lg overflow-hidden bg-white shadow-sm">
               <button 
+                type="button"
                 onClick={() => setView('dashboard')}
                 className={`px-6 py-2.5 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all border-r-[2px] border-[#362F4F] 
                   ${currentView === 'dashboard' 
@@ -37,11 +59,12 @@ export default function Navbar({ user, logout, setView, currentView }) {
                 <LayoutDashboard size={14} strokeWidth={3} /> HUB
               </button>
               <button 
+                type="button"
                 onClick={() => setView('progress')}
                 className={`px-6 py-2.5 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all 
                   ${currentView === 'progress' 
-                    ? 'bg-[#008BFF] text-white' 
-                    : 'text-[#362F4F] hover:bg-[#008BFF] hover:text-white transition-colors'}`}
+                    ? 'bg-[#3A9AFF] text-white' 
+                    : 'text-[#362F4F] hover:bg-[#3A9AFF] hover:text-white transition-colors'}`}
               >
                 <BarChart3 size={14} strokeWidth={3} /> PROGRESS
               </button>
@@ -61,6 +84,7 @@ export default function Navbar({ user, logout, setView, currentView }) {
 
             {/* LOGOUT */}
             <button 
+              type="button"
               onClick={logout}
               className="w-10 h-10 flex items-center justify-center rounded-lg border-[2px] border-[#362F4F] text-[#362F4F] hover:bg-[#E63946] hover:text-white hover:border-[#E63946] transition-all active:scale-95 shadow-sm"
             >
@@ -73,18 +97,20 @@ export default function Navbar({ user, logout, setView, currentView }) {
       {/* MOBILE BOTTOM TACTICAL NAVIGATION DOCK */}
       <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-lg border-t-[2.5px] border-[#362F4F]/10 md:hidden z-[1000] px-6 py-3 flex items-center justify-around shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
         <button 
+          type="button"
           onClick={() => setView('dashboard')}
           className={`flex flex-col items-center justify-center gap-1 py-1 px-4 rounded-xl transition-all active:scale-95 text-[10px] font-black uppercase tracking-wider
-            ${currentView === 'dashboard' ? 'text-[#008BFF]' : 'text-[#362F4F]/40'}`}
+            ${currentView === 'dashboard' ? 'text-[#3A9AFF]' : 'text-[#362F4F]/40'}`}
         >
           <LayoutDashboard size={20} strokeWidth={currentView === 'dashboard' ? 3 : 2} />
           <span>Hub</span>
         </button>
 
         <button 
+          type="button"
           onClick={() => setView('progress')}
           className={`flex flex-col items-center justify-center gap-1 py-1 px-4 rounded-xl transition-all active:scale-95 text-[10px] font-black uppercase tracking-wider
-            ${currentView === 'progress' ? 'text-[#008BFF]' : 'text-[#362F4F]/40'}`}
+            ${currentView === 'progress' ? 'text-[#3A9AFF]' : 'text-[#362F4F]/40'}`}
         >
           <BarChart3 size={20} strokeWidth={currentView === 'progress' ? 3 : 2} />
           <span>Progress</span>

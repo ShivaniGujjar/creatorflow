@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 export default function Teleprompter({ day, onClose }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(2); 
-  {/* RESPONSIVE FIX: Mobile view ports par default font size tight rakha taaki wrap na tute */}
+  /* RESPONSIVE FIX: Mobile view ports par default font size tight rakha taaki wrap na tute */
   const [fontSize, setFontSize] = useState(window.innerWidth < 640 ? 28 : 54); 
   const scrollRef = useRef(null);
   const requestRef = useRef();
@@ -36,7 +36,6 @@ export default function Teleprompter({ day, onClose }) {
     <div className="fixed inset-0 bg-[#0A0A0A] z-[10000] flex flex-col text-white overflow-hidden font-sans">
       
       {/* 1. TACTICAL FLOATING HEADER */}
-      {/* RESPONSIVE FIX: Spacing optimized from p-6 to p-4 for multi-row setups */}
       <div className="p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-stretch sm:items-center bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/5 z-50 gap-4 flex-shrink-0">
         <div className="flex flex-col sm:flex-row sm:gap-10 sm:items-center gap-3">
           <div className="space-y-1">
@@ -50,7 +49,6 @@ export default function Teleprompter({ day, onClose }) {
           </div>
 
           {/* Controls - Refined Modules */}
-          {/* RESPONSIVE FIX: Mobile par hidden hatakar grid model p-1 banaya taaki touch screens par targets miss na hon */}
           <div className="flex items-center justify-between sm:justify-start gap-2 bg-white/5 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl border border-white/10 w-full sm:w-auto">
             <div className="flex flex-1 sm:flex-none items-center justify-between sm:justify-start gap-2 sm:gap-4 px-3 sm:px-4 border-r border-white/5">
               <span className="text-[8px] font-black uppercase text-white/20 tracking-widest italic whitespace-nowrap">Velocity</span>
@@ -82,25 +80,24 @@ export default function Teleprompter({ day, onClose }) {
         </div>
       </div>
 
-      {/* 2. EYE-LINE READ ZONE */}
-      {/* RESPONSIVE FIX: Mobile bounds adjustments preventing marker clipping */}
+      {/* 2. EYE-LINE READ ZONE - FIXED: Removed backdrop-blur to eradicate the foggy filter */}
       <div className="fixed top-1/2 left-0 right-0 h-[100px] sm:h-[140px] -translate-y-1/2 pointer-events-none z-20">
-        <div className="absolute inset-0 bg-white/[0.02] border-y border-white/5 backdrop-blur-[2px]" />
+        {/* FIXED: Subtle sharp container boundaries to ensure 100% text readability */}
+        <div className="absolute inset-0 bg-white/[0.01] border-y border-white/10" />
         
         {/* Eye-line Markers */}
-        <div className="absolute left-3 sm:left-8 top-1/2 -translate-y-1/2 flex flex-col items-center gap-1 opacity-20">
-           <div className="w-1 h-1 bg-[#E4FF30] rounded-full" />
-           <div className="w-[1px] h-6 sm:h-10 bg-[#E4FF30]" />
-           <div className="w-1 h-1 bg-[#E4FF30] rounded-full" />
+        <div className="absolute left-3 sm:left-8 top-1/2 -translate-y-1/2 flex flex-col items-center gap-1 opacity-40">
+           <div className="w-1 h-1 bg-[#E4FF30] rounded-full shadow-[0_0_6px_#E4FF30]" />
+           <div className="w-[1px] h-6 sm:h-10 bg-gradient-to-b from-transparent via-[#E4FF30] to-transparent" />
+           <div className="w-1 h-1 bg-[#E4FF30] rounded-full shadow-[0_0_6px_#E4FF30]" />
         </div>
         
         <div className="absolute right-3 sm:right-8 top-1/2 -translate-y-1/2 flex items-center gap-3">
-           <span className="text-[7px] sm:text-[8px] font-black uppercase text-[#E4FF30] tracking-[0.4em] sm:tracking-[0.6em] opacity-30 italic">Focus Anchor</span>
+           <span className="text-[7px] sm:text-[8px] font-black uppercase text-[#E4FF30] tracking-[0.4em] sm:tracking-[0.6em] opacity-40 italic">Focus Anchor</span>
         </div>
       </div>
 
       {/* 3. READING ENGINE */}
-      {/* RESPONSIVE FIX: Side padding squeezed from 20% to tight fractions on phones to expand visual feed area */}
       <div 
         ref={scrollRef}
         className="flex-1 overflow-y-auto scrollbar-hide px-4 sm:px-[15%] md:px-[20%] text-center selection:bg-[#E4FF30] selection:text-black z-10"
@@ -111,7 +108,6 @@ export default function Teleprompter({ day, onClose }) {
           className="font-black leading-[1.4] uppercase tracking-tight py-[45vh] transition-all"
         >
           {/* HOOK MODULE */}
-          {/* RESPONSIVE FIX: Sized card padding down drastically from px-12 py-8 to px-6 py-5 */}
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -138,7 +134,6 @@ export default function Teleprompter({ day, onClose }) {
       </div>
 
       {/* 4. MASTER CONTROLLER */}
-      {/* RESPONSIVE FIX: Bottom layout padded cleanly, py reduced from py-6 to py-4 to lift away from text collisions */}
       <div className="fixed bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 z-50 max-w-full">
         <button 
           type="button"
