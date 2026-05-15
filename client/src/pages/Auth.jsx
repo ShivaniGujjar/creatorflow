@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Zap, ShieldCheck, UserPlus, KeyRound } from 'lucide-react';
+import { Zap, ShieldCheck, UserPlus, KeyRound, Eye, EyeOff } from 'lucide-react';
 
-// AUTO-SWITCHING LOGIC: `.env` cache ka baap bhi ab Render par nahi bhaag payega local par!
+// AUTO-SWITCHING LOGIC
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = isLocal 
   ? 'http://localhost:5000' 
@@ -12,6 +12,7 @@ export default function Auth({ onAuthSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Eye toggle state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,7 +61,7 @@ export default function Auth({ onAuthSuccess }) {
           <form onSubmit={handleSubmit} className="w-full space-y-4 sm:space-y-6">
             {!isLogin && (
               <div className="space-y-1.5">
-                <label className="text-[9px] font-black text-[#362F4F]/40 uppercase tracking-widest ml-4 italic">Agent_Name</label>
+                <label className="text-[9px] font-black text-[#362F4F]/40 uppercase tracking-widest ml-4 italic">Agent Name</label>
                 <input 
                   className="w-full bg-[#FDFCF8] border border-gray-100 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl font-bold text-sm outline-none focus:bg-white focus:border-[#008BFF] focus:ring-4 focus:ring-[#008BFF]/5 transition-all placeholder:text-gray-200"
                   placeholder="ENTER NAME" 
@@ -83,16 +84,26 @@ export default function Auth({ onAuthSuccess }) {
               />
             </div>
 
+            {/* PASSWORD FIELD WITH INTEGRATED EYE TOGGLE */}
             <div className="space-y-1.5">
               <label className="text-[9px] font-black text-[#362F4F]/40 uppercase tracking-widest ml-4 italic">Secure Password</label>
-              <input 
-                className="w-full bg-[#FDFCF8] border border-gray-100 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl font-bold text-sm outline-none focus:bg-white focus:border-[#008BFF] focus:ring-4 focus:ring-[#008BFF]/5 transition-all placeholder:text-gray-200"
-                placeholder="••••••••" 
-                type="password"
-                autoComplete="current-password"
-                required
-                onChange={(e) => setFormData({...formData, password: e.target.value})} 
-              />
+              <div className="relative w-full">
+                <input 
+                  className="w-full bg-[#FDFCF8] border border-gray-100 p-3.5 sm:p-4 pr-12 sm:pr-14 rounded-xl sm:rounded-2xl font-bold text-sm outline-none focus:bg-white focus:border-[#008BFF] focus:ring-4 focus:ring-[#008BFF]/5 transition-all placeholder:text-gray-200"
+                  placeholder="••••••••" 
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  required
+                  onChange={(e) => setFormData({...formData, password: e.target.value})} 
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 sm:right-5 top-1/2 -translate-y-1/2 text-[#362F4F]/40 hover:text-[#008BFF] transition-colors p-1"
+                >
+                  {showPassword ? <EyeOff size={18} strokeWidth={2.5} /> : <Eye size={18} strokeWidth={2.5} />}
+                </button>
+              </div>
             </div>
 
             <button 
@@ -100,13 +111,16 @@ export default function Auth({ onAuthSuccess }) {
               className={`w-full bg-[#362F4F] text-white py-4 sm:py-5 rounded-xl sm:rounded-2xl font-[1000] uppercase italic tracking-widest shadow-xl shadow-[#362F4F]/20 hover:bg-[#261CC1] hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               <KeyRound size={18} className="text-[#E4FF30]" />
-              {loading ? 'Processing...' : (isLogin ? 'Initialize Session' : 'Register Identity')}
+              {loading ? 'Processing...' : (isLogin ? 'Login' : 'Register')}
             </button>
           </form>
 
           <button 
             type="button"
-            onClick={() => setIsLogin(!isLogin)}
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setShowPassword(false); // Switch karte hi mask clean reset
+            }}
             className="mt-6 sm:mt-10 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-[#362F4F]/20 hover:text-[#008BFF] transition-all"
           >
             {isLogin ? 'Need a mission? Sign Up' : 'Already an agent? Login'}
