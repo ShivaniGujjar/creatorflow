@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -21,16 +22,15 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Agar tumne controller se password hashing hata di hai aur yahan pre-save hook chahiye, toh:
-const bcrypt = require('bcryptjs');
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+// FIXED HOOK: Modern Mongoose syntax se code ko stable kar diya
+userSchema.pre('save', async function() {
+  if (!this.isModified('password')) return;
+
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    next();
   } catch (err) {
-    next(err);
+    throw err; // Async hooks mein straight return ya error throw karte hain
   }
 });
 

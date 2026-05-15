@@ -28,29 +28,36 @@ export default function LandingPage({ onEnter }) {
       
       {/* REFINED MESH BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] right-[-5%] w-[300px] sm:w-[800px] h-[300px] sm:w-[800px] bg-[#3A9AFF]/5 rounded-full blur-[80px] sm:blur-[120px]" />
-        <div className="absolute bottom-[5%] left-[-5%] w-[300px] sm:w-[600px] h-[300px] sm:w-[600px] bg-[#F1FF5E]/10 rounded-full blur-[80px] sm:blur-[100px]" />
+        <div className="absolute top-[-10%] right-[-5%] w-[300px] sm:w-[800px] h-[300px] sm:h-[800px] bg-[#3A9AFF]/5 rounded-full blur-[80px] sm:blur-[120px]" />
+        <div className="absolute bottom-[5%] left-[-5%] w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-[#F1FF5E]/10 rounded-full blur-[80px] sm:blur-[100px]" />
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: `radial-gradient(#1C0770 0.5px, transparent 0.5px)`, backgroundSize: '20px 20px' }} />
       </div>
 
       {/* SLEEK CAPSULE NAV */}
-      <nav className="fixed top-4 sm:top-6 left-0 w-full z-[100] px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto bg-white/70 backdrop-blur-xl border border-white/80 rounded-2xl px-4 sm:px-6 py-2.5 sm:py-3 flex justify-between items-center shadow-sm">
-          <div className="flex items-center gap-2">
-            <div className="bg-[#1C0770] p-1.5 rounded-lg shadow-md">
-              <Zap size={14} className="text-[#F1FF5E] sm:w-[16px] sm:h-[16px]" fill="currentColor" />
+      {/* RESPONSIVE FIX: Mobile par spacing, tracking aur overflow structure ko robust kar diya */}
+      <nav className="fixed top-3 sm:top-6 left-0 w-full z-[100] px-3 sm:px-6">
+        <div className="max-w-5xl mx-auto bg-white/70 backdrop-blur-xl border border-white/80 rounded-xl sm:rounded-2xl px-3 sm:px-6 py-2 sm:py-3 flex justify-between items-center shadow-sm">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="bg-[#1C0770] p-1.5 rounded-lg shadow-md flex-shrink-0">
+              <Zap size={13} className="text-[#F1FF5E] sm:w-[16px] sm:h-[16px]" fill="currentColor" />
             </div>
-            <span className="font-black text-base sm:text-lg italic uppercase tracking-tighter text-[#1C0770]">CreatorFlow.</span>
+            {/* RESPONSIVE FIX: Text truncation safety aur dynamic text sizing */}
+            <span className="font-black text-sm sm:text-lg italic uppercase tracking-tighter text-[#1C0770] truncate">
+              CREATOR<span className="text-[#3A9AFF] sm:text-[#1C0770]">FLOW.</span>
+              <span className="hidden sm:inline text-[#1C0770]/20 font-mono text-[10px] ml-1 font-bold tracking-widest">PROTOCOL</span>
+            </span>
           </div>
-          <div className="flex items-center gap-3 sm:gap-6">
-            <button onClick={onEnter} className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-[#1C0770]/40 hover:text-[#1C0770] transition-colors">Protocol</button>
-            <button onClick={onEnter} className="bg-[#1C0770] text-white px-3 sm:px-6 py-2 rounded-xl font-black uppercase italic text-[9px] sm:text-[10px] tracking-widest hover:bg-[#261CC1] transition-all shadow-lg shadow-[#1C0770]/10 whitespace-nowrap">Access Terminal</button>
+          
+          {/* RESPONSIVE FIX: Target links alignment handles cleanly with balanced gaps */}
+          <div className="flex items-center gap-2 sm:gap-6 flex-shrink-0">
+            <button onClick={onEnter} className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-[#1C0770]/40 hover:text-[#1C0770] transition-colors">Protocol</button>
+            <button onClick={onEnter} className="bg-[#1C0770] text-white px-3 sm:px-6 py-2 rounded-lg sm:rounded-xl font-black uppercase italic text-[8px] sm:text-[10px] tracking-widest hover:bg-[#261CC1] transition-all shadow-lg shadow-[#1C0770]/10 whitespace-nowrap">Access Terminal</button>
           </div>
         </div>
       </nav>
 
       {/* HERO SECTION: REFINED SCALE */}
-      <header className="relative pt-36 sm:pt-48 pb-20 sm:pb-32 px-4 sm:px-10">
+      <header className="relative pt-32 sm:pt-48 pb-20 sm:pb-32 px-4 sm:px-10">
         <div className="max-w-4xl mx-auto text-center space-y-8 sm:space-y-10">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap justify-center gap-2 sm:gap-3">
             <TacticalTag text="v2.6 Stable" />
