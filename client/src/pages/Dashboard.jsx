@@ -51,32 +51,32 @@ export default function Dashboard({ roadmap, progress, toggleDay, onStart, reset
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCF8] relative pb-32 font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#FDFCF8] relative pb-24 sm:pb-32 font-sans overflow-x-hidden">
       
       {/* BACKGROUND TEXTURE */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.03]" 
            style={{ backgroundImage: `radial-gradient(#1C0770 0.5px, transparent 0.5px)`, backgroundSize: '32px 32px' }} />
 
-      <div className="max-w-7xl mx-auto px-8 pt-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-8 sm:pt-12 relative z-10">
         
         {/* HEADER AREA */}
-        <div className="flex justify-between items-end mb-12 px-2">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-8 sm:mb-12 px-2">
             <div className="space-y-1">
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1C0770]/20 italic flex items-center gap-2">
                    <div className="w-1.5 h-1.5 rounded-full bg-[#3A9AFF] animate-pulse" />Active
                 </span>
-                <h1 className="text-3xl font-[1000] uppercase italic text-[#1C0770] tracking-tighter leading-none">
+                <h1 className="text-2xl sm:text-3xl font-[1000] uppercase italic text-[#1C0770] tracking-tighter leading-none">
                    Mission <span className="text-[#3A9AFF]">Control.</span>
                 </h1>
             </div>
-            <div className="text-right hidden sm:block leading-tight">
+            <div className="sm:text-right leading-tight border-l-2 sm:border-l-0 border-gray-100 pl-3 sm:pl-0">
                 <span className="text-[9px] font-black uppercase tracking-widest text-gray-300 italic">Target Niche</span>
                 <span className="text-[11px] font-bold text-[#1C0770] uppercase block">{roadmap.niche}</span>
             </div>
         </div>
 
-        {/* PROGRESS HUD - Refined Module Style */}
-        <div className="mb-16">
+        {/* PROGRESS HUD */}
+        <div className="mb-10 sm:mb-16">
             <ProgressBar progress={progress} completedCount={completedCount} />
         </div>
 
@@ -86,48 +86,48 @@ export default function Dashboard({ roadmap, progress, toggleDay, onStart, reset
               key="new-op-portal"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-16 p-12 bg-white rounded-[3rem] border-[2.5px] border-[#1C0770] shadow-sm relative overflow-hidden"
+              className="mb-12 sm:mb-16 p-6 sm:p-12 bg-white rounded-3xl sm:rounded-[3rem] border-[2px] sm:border-[2.5px] border-[#1C0770] shadow-sm relative overflow-hidden"
             >
-              <div className="relative z-10 flex flex-col items-center text-center space-y-8">
-                <div className="bg-gray-50 text-[#1C0770]/40 px-5 py-2 rounded-full border border-gray-100 text-[10px] font-black uppercase tracking-[0.5em] italic">
+              <div className="relative z-10 flex flex-col items-center text-center space-y-6 sm:space-y-8">
+                <div className="bg-gray-50 text-[#1C0770]/40 px-4 sm:px-5 py-2 rounded-full border border-gray-100 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.5em] italic max-w-full truncate">
                   Mission Secured // Deploy New Directive
                 </div>
-                <h2 className="text-5xl font-[1000] uppercase italic text-[#1C0770] tracking-tighter leading-none">
+                <h2 className="text-3xl sm:text-5xl font-[1000] uppercase italic text-[#1C0770] tracking-tighter leading-none">
                   Initiate <span className="text-[#3A9AFF]">New Mission.</span>
                 </h2>
 
-                <div className="w-full max-w-2xl flex flex-col md:flex-row gap-4 pt-4">
+                <div className="w-full max-w-2xl flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
                   <div className="flex-1 relative group">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-[#1C0770]/20 group-focus-within:text-[#3A9AFF] transition-colors" size={20} />
+                    <Search className="absolute left-5 sm:left-6 top-1/2 -translate-y-1/2 text-[#1C0770]/20 group-focus-within:text-[#3A9AFF] transition-colors" size={18} />
                     <input 
                       value={newNiche}
                       onChange={(e) => setNewNiche(e.target.value)}
                       placeholder="ENTER NEW NICHE..."
-                      className="w-full bg-[#FDFCF8] border-[2px] border-[#1C0770] p-5 pl-16 rounded-2xl font-bold text-sm outline-none focus:border-[#3A9AFF] transition-all uppercase"
+                      className="w-full bg-[#FDFCF8] border-[2px] border-[#1C0770] p-4 sm:p-5 pl-12 sm:pl-16 rounded-xl sm:rounded-2xl font-bold text-sm outline-none focus:border-[#3A9AFF] transition-all uppercase"
                     />
                   </div>
                   <button 
                     onClick={() => newNiche && reset(newNiche)}
-                    className="bg-[#1C0770] text-white px-10 py-5 rounded-2xl font-[1000] uppercase italic text-xs tracking-widest hover:bg-[#261CC1] transition-all flex items-center justify-center gap-3 active:scale-95 shadow-lg shadow-[#1C0770]/10"
+                    className="bg-[#1C0770] text-white px-8 sm:px-10 py-4 sm:py-5 rounded-xl sm:rounded-2xl font-[1000] uppercase italic text-xs tracking-widest hover:bg-[#261CC1] transition-all flex items-center justify-center gap-3 active:scale-95 shadow-lg shadow-[#1C0770]/10 w-full sm:w-auto"
                   >
-                    <Sparkles size={18} className="text-[#F1FF5E]" /> Deploy
+                    <Sparkles size={16} className="text-[#F1FF5E]" /> Deploy
                   </button>
                 </div>
               </div>
             </motion.div>
           ) : (
-            <div className="mb-16 flex justify-center">
-                 <div className="inline-flex items-center gap-4 px-8 py-3 bg-white border border-gray-100 rounded-full shadow-sm hover:shadow-md transition-all">
-                    <div className="relative">
-                        <Activity size={16} className="text-[#3A9AFF] relative z-10" />
+            <div className="mb-12 sm:mb-16 flex justify-center px-2">
+                 <div className="inline-flex items-center gap-3 sm:gap-4 px-4 sm:px-8 py-3 bg-white border border-gray-100 rounded-full shadow-sm hover:shadow-md transition-all max-w-full">
+                    <div className="relative flex-shrink-0">
+                        <Activity size={14} className="text-[#3A9AFF] relative z-10" />
                         <div className="absolute inset-0 bg-[#3A9AFF]/20 rounded-full animate-ping opacity-20" />
                     </div>
-                    <div className="flex items-center gap-3">
-                        <span className="text-[11px] font-[1000] uppercase italic tracking-[0.2em] text-[#1C0770]">
+                    <div className="flex items-center gap-2 sm:gap-3 overflow-hidden">
+                        <span className="text-[10px] sm:text-[11px] font-[1000] uppercase italic tracking-[0.15em] sm:tracking-[0.2em] text-[#1C0770] truncate">
                             {roadmap.niche}
                         </span>
-                        <div className="w-px h-3 bg-gray-100" />
-                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#1C0770]/20 italic">Active Mission</span>
+                        <div className="w-px h-3 bg-gray-100 flex-shrink-0" />
+                        <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[#1C0770]/20 italic whitespace-nowrap">Active Mission</span>
                     </div>
                  </div>
             </div>
@@ -135,12 +135,12 @@ export default function Dashboard({ roadmap, progress, toggleDay, onStart, reset
         </AnimatePresence>
 
         {/* ROADMAP SECTION */}
-        <div className="flex items-center gap-6 mb-12 px-2">
-          <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1C0770]/20 italic">Mission Roadmap Grid</span>
+        <div className="flex items-center gap-4 sm:gap-6 mb-8 sm:mb-12 px-2">
+          <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.5em] text-[#1C0770]/20 italic whitespace-nowrap">Mission Roadmap Grid</span>
           <div className="h-px flex-1 bg-gray-100" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
           {roadmap.days.map((day) => (
             <RoadmapCard 
               key={day.dayNumber}
@@ -155,12 +155,12 @@ export default function Dashboard({ roadmap, progress, toggleDay, onStart, reset
         </div>
 
         {/* SYSTEM ABORT */}
-        <div className="mt-32 flex justify-center">
+        <div className="mt-20 sm:mt-32 flex justify-center">
           <button 
             onClick={() => window.confirm("Reset System Archive?") && reset()}
-            className="group flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.5em] text-[#1C0770]/20 hover:text-red-400 transition-all"
+            className="group flex items-center gap-3 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.5em] text-[#1C0770]/20 hover:text-red-400 transition-all"
           >
-            <RefreshCcw size={14} className="group-hover:rotate-180 transition-transform duration-700" /> 
+            <RefreshCcw size={12} className="group-hover:rotate-180 transition-transform duration-700" /> 
             RESET
           </button>
         </div>

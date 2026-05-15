@@ -3,7 +3,8 @@ import axios from 'axios';
 import { Zap, ShieldCheck, UserPlus, KeyRound } from 'lucide-react';
 
 // Vercel deployment ke liye Base URL dynamic hona chahiye
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// Isko check kar lo ki variable ke end mein slash na ho aur string sahi handle ho
+const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
 
 export default function Auth({ onAuthSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,10 +15,11 @@ export default function Auth({ onAuthSuccess }) {
     e.preventDefault();
     setLoading(true);
     
+    // Slash explicitely check kar lo endpoints ke aage
     const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
     
     try {
-      // Dynamic URL using backticks
+      // Dynamic URL construct
       const res = await axios.post(`${API_BASE_URL}${endpoint}`, formData);
       
       // Tokens and user data persistence
@@ -41,27 +43,30 @@ export default function Auth({ onAuthSuccess }) {
       <div className="relative w-full max-w-md">
         
         {/* Main Auth Card */}
-        <div className="relative bg-white border border-gray-100 rounded-[2.5rem] p-12 flex flex-col items-center shadow-[0_40px_80px_-20px_rgba(54,47,79,0.1)] transition-all">
+        {/* RESPONSIVE FIX: Mobile par p-6 aur rounded-3xl, desktop par back to p-12 aur rounded-[2.5rem] */}
+        <div className="relative w-full bg-white border border-gray-100 rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-12 flex flex-col items-center shadow-[0_40px_80px_-20px_rgba(54,47,79,0.1)] transition-all">
           
           {/* Header Section */}
-          <div className="w-full mb-10 text-center">
-            <div className="inline-flex bg-[#E4FF30] text-[#362F4F] p-4 rounded-2xl mb-5 shadow-sm">
-              {isLogin ? <ShieldCheck size={28} strokeWidth={2.5} /> : <UserPlus size={28} strokeWidth={2.5} />}
+          {/* RESPONSIVE FIX: Spacing and text dynamic scaling */}
+          <div className="w-full mb-6 sm:mb-10 text-center">
+            <div className="inline-flex bg-[#E4FF30] text-[#362F4F] p-3 sm:p-4 rounded-xl sm:rounded-2xl mb-4 sm:mb-5 shadow-sm">
+              {isLogin ? <ShieldCheck size={24} className="sm:w-[28px] sm:h-[28px]" strokeWidth={2.5} /> : <UserPlus size={24} className="sm:w-[28px] sm:h-[28px]" strokeWidth={2.5} />}
             </div>
-            <div className="text-[10px] font-black uppercase text-[#362F4F]/30 tracking-[0.4em] mb-2 italic">
+            <div className="text-[9px] sm:text-[10px] font-black uppercase text-[#362F4F]/30 tracking-[0.4em] mb-2 italic">
               Terminal Access
             </div>
-            <h2 className="text-4xl font-[1000] uppercase italic tracking-tighter text-[#362F4F] leading-none">
+            <h2 className="text-3xl sm:text-4xl font-[1000] uppercase italic tracking-tighter text-[#362F4F] leading-none">
               {isLogin ? 'Access' : 'Join'} <span className="text-[#008BFF]">{isLogin ? 'Portal' : 'Agency'}</span>
             </h2>
           </div>
 
-          <form onSubmit={handleSubmit} className="w-full space-y-6">
+          {/* RESPONSIVE FIX: Spacing tightened from space-y-6 to space-y-4 for mobile viewports */}
+          <form onSubmit={handleSubmit} className="w-full space-y-4 sm:space-y-6">
             {!isLogin && (
               <div className="space-y-1.5">
                 <label className="text-[9px] font-black text-[#362F4F]/40 uppercase tracking-widest ml-4 italic">Agent_Name</label>
                 <input 
-                  className="w-full bg-[#FDFCF8] border border-gray-100 p-4 rounded-2xl font-bold text-sm outline-none focus:bg-white focus:border-[#008BFF] focus:ring-4 focus:ring-[#008BFF]/5 transition-all placeholder:text-gray-200"
+                  className="w-full bg-[#FDFCF8] border border-gray-100 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl font-bold text-sm outline-none focus:bg-white focus:border-[#008BFF] focus:ring-4 focus:ring-[#008BFF]/5 transition-all placeholder:text-gray-200"
                   placeholder="ENTER NAME" 
                   autoComplete="off"
                   required
@@ -73,7 +78,7 @@ export default function Auth({ onAuthSuccess }) {
             <div className="space-y-1.5">
               <label className="text-[9px] font-black text-[#362F4F]/40 uppercase tracking-widest ml-4 italic">Email Address</label>
               <input 
-                className="w-full bg-[#FDFCF8] border border-gray-100 p-4 rounded-2xl font-bold text-sm outline-none focus:bg-white focus:border-[#008BFF] focus:ring-4 focus:ring-[#008BFF]/5 transition-all placeholder:text-gray-200"
+                className="w-full bg-[#FDFCF8] border border-gray-100 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl font-bold text-sm outline-none focus:bg-white focus:border-[#008BFF] focus:ring-4 focus:ring-[#008BFF]/5 transition-all placeholder:text-gray-200"
                 placeholder="NAME@AGENCY.COM" 
                 type="email"
                 autoComplete="email"
@@ -85,7 +90,7 @@ export default function Auth({ onAuthSuccess }) {
             <div className="space-y-1.5">
               <label className="text-[9px] font-black text-[#362F4F]/40 uppercase tracking-widest ml-4 italic">Secure Password</label>
               <input 
-                className="w-full bg-[#FDFCF8] border border-gray-100 p-4 rounded-2xl font-bold text-sm outline-none focus:bg-white focus:border-[#008BFF] focus:ring-4 focus:ring-[#008BFF]/5 transition-all placeholder:text-gray-200"
+                className="w-full bg-[#FDFCF8] border border-gray-100 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl font-bold text-sm outline-none focus:bg-white focus:border-[#008BFF] focus:ring-4 focus:ring-[#008BFF]/5 transition-all placeholder:text-gray-200"
                 placeholder="••••••••" 
                 type="password"
                 autoComplete="current-password"
@@ -94,9 +99,10 @@ export default function Auth({ onAuthSuccess }) {
               />
             </div>
 
+            {/* RESPONSIVE FIX: Button scaling padding for mobile fingers */}
             <button 
               disabled={loading}
-              className={`w-full bg-[#362F4F] text-white py-5 rounded-2xl font-[1000] uppercase italic tracking-widest shadow-xl shadow-[#362F4F]/20 hover:bg-[#261CC1] hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`w-full bg-[#362F4F] text-white py-4 sm:py-5 rounded-xl sm:rounded-2xl font-[1000] uppercase italic tracking-widest shadow-xl shadow-[#362F4F]/20 hover:bg-[#261CC1] hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               <KeyRound size={18} className="text-[#E4FF30]" />
               {loading ? 'Processing...' : (isLogin ? 'Initialize Session' : 'Register Identity')}
@@ -104,10 +110,11 @@ export default function Auth({ onAuthSuccess }) {
           </form>
 
           {/* Toggle Button */}
+          {/* RESPONSIVE FIX: Balanced top margin */}
           <button 
             type="button"
             onClick={() => setIsLogin(!isLogin)}
-            className="mt-10 text-[10px] font-black uppercase tracking-[0.2em] text-[#362F4F]/20 hover:text-[#008BFF] transition-all"
+            className="mt-6 sm:mt-10 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-[#362F4F]/20 hover:text-[#008BFF] transition-all"
           >
             {isLogin ? 'Need a mission? Sign Up' : 'Already an agent? Login'}
           </button>
