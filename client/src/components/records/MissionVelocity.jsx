@@ -23,12 +23,14 @@ export default function MissionVelocity({ roadmap, legacyData }) {
   const activeData = view === 'weekly' ? weeklyData : allTimeData;
 
   return (
-    <div className="bg-[#362F4F] border-[2.5px] border-[#362F4F] rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden transition-all duration-500">
+    /* RESPONSIVE FIX: Mobile padding reduce to p-5, rounded radius scaled for mobile viewports */
+    <div className="bg-[#362F4F] border-[2.5px] border-[#362F4F] rounded-3xl sm:rounded-[2.5rem] p-5 sm:p-8 shadow-2xl relative overflow-hidden transition-all duration-500">
       {/* Background HUD Decor */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-[#008BFF]/5 blur-[100px] pointer-events-none" />
 
       {/* CHART HEADER & TOGGLE */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6 relative z-10">
+      {/* RESPONSIVE FIX: Stack items on top of each other on mobile view, handle wide view layout gaps */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 sm:mb-10 gap-6 relative z-10">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
              <Activity size={14} className="text-[#E4FF30] animate-pulse" />
@@ -36,22 +38,23 @@ export default function MissionVelocity({ roadmap, legacyData }) {
                Analytics Engine
              </span>
           </div>
-          <h3 className="text-3xl font-[1000] uppercase italic tracking-tighter text-white">
+          <h3 className="text-2xl sm:text-3xl font-[1000] uppercase italic tracking-tighter text-white">
             Mission <span className="text-[#008BFF]">Velocity.</span>
           </h3>
         </div>
 
         {/* TACTICAL TOGGLE */}
-        <div className="flex bg-[#FDFCF8]/5 p-1 rounded-2xl border border-white/10 self-stretch md:self-auto">
+        {/* RESPONSIVE FIX: Full stretch control bar on single stack mobile windows */}
+        <div className="flex bg-[#FDFCF8]/5 p-1 rounded-2xl border border-white/10 w-full sm:w-auto">
           <button 
             onClick={() => setView('weekly')}
-            className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[10px] font-black uppercase italic tracking-widest transition-all ${view === 'weekly' ? 'bg-[#E4FF30] text-[#362F4F]' : 'text-white/40 hover:text-white'}`}
+            className={`flex-1 sm:flex-none px-4 sm:px-6 py-2.5 rounded-xl text-[10px] font-black uppercase italic tracking-widest transition-all ${view === 'weekly' ? 'bg-[#E4FF30] text-[#362F4F]' : 'text-white/40 hover:text-white'}`}
           >
             Weekly View
           </button>
           <button 
             onClick={() => setView('legacy')}
-            className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[10px] font-black uppercase italic tracking-widest transition-all ${view === 'legacy' ? 'bg-[#008BFF] text-white' : 'text-white/40 hover:text-white'}`}
+            className={`flex-1 sm:flex-none px-4 sm:px-6 py-2.5 rounded-xl text-[10px] font-black uppercase italic tracking-widest transition-all ${view === 'legacy' ? 'bg-[#008BFF] text-white' : 'text-white/40 hover:text-white'}`}
           >
             All Time
           </button>
@@ -59,7 +62,8 @@ export default function MissionVelocity({ roadmap, legacyData }) {
       </div>
 
       {/* CHART CONTAINER */}
-      <div className="h-64 w-full">
+      {/* RESPONSIVE FIX: Height tight padding scale so it scales fluidly across all breakpoints */}
+      <div className="h-60 sm:h-64 w-full -ml-3 sm:ml-0 pr-2 sm:pr-0">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={activeData}>
             <defs>
@@ -98,18 +102,17 @@ export default function MissionVelocity({ roadmap, legacyData }) {
       </div>
 
       {/* CHART FOOTER SPECS */}
-      <div className="mt-8 flex justify-between items-center border-t border-white/5 pt-6">
-        <div className="flex gap-8">
+      <div className="mt-6 flex justify-between items-center border-t border-white/5 pt-6">
+        <div className="flex gap-6 sm:gap-8">
            <div className="space-y-1">
-              <p className="text-[7px] font-black uppercase text-white/30 tracking-widest leading-none">Sync Status</p>
-              <p className="text-sm font-black italic text-white uppercase leading-none tracking-tighter">Live Feed</p>
+             <p className="text-[7px] font-black uppercase text-white/30 tracking-widest leading-none">Sync Status</p>
+             <p className="text-xs sm:text-sm font-black italic text-white uppercase leading-none tracking-tighter">Live Feed</p>
            </div>
            <div className="space-y-1">
-              <p className="text-[7px] font-black uppercase text-white/30 tracking-widest leading-none">Data Quality</p>
-              <p className="text-sm font-black italic text-[#E4FF30] uppercase leading-none tracking-tighter">High</p>
+             <p className="text-[7px] font-black uppercase text-white/30 tracking-widest leading-none">Data Quality</p>
+             <p className="text-xs sm:text-sm font-black italic text-[#E4FF30] uppercase leading-none tracking-tighter">High</p>
            </div>
         </div>
-        
       </div>
     </div>
   );

@@ -5,15 +5,18 @@ export const useMission = (user, setUser) => {
   const [roadmap, setRoadmap] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // FIX: API base URL properly handle karo
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  // AUTO-SWITCHING FIX: Vite server cache bypass system
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const API_BASE_URL = isLocal 
+    ? 'http://localhost:5000' 
+    : (import.meta.env.VITE_API_URL || 'https://creatorflow-gbci.onrender.com').replace(/\/$/, '');
 
   useEffect(() => {
     if (user) fetchUserRoadmap();
   }, [user]);
 
   const fetchUserRoadmap = async () => {
-    const token = localStorage.getItem('token'); // Token hamesha call ke andar lo
+    const token = localStorage.getItem('token'); 
     try {
       const res = await axios.get(`${API_BASE_URL}/api/roadmaps/my-roadmap`, {
         headers: { 'x-auth-token': token }
@@ -24,8 +27,7 @@ export const useMission = (user, setUser) => {
     }
   };
 
-  // --- PROGRESS CALCULATION (THE FIX) ---
-  // useMemo ensure karta hai ki jaise hi roadmap state badlegi, progress bar update hoga
+  // --- PROGRESS CALCULATION ---
   const progress = useMemo(() => {
     if (!roadmap || !roadmap.days || roadmap.days.length === 0) return 0;
     const completed = roadmap.days.filter(d => d.completed).length;
@@ -43,7 +45,6 @@ export const useMission = (user, setUser) => {
       );
 
       if (res.data) {
-        // Spread operator is critical for React to see the object changed
         setRoadmap({ ...res.data }); 
         console.log(`Sync Success: Day ${dayNumber}`);
       }

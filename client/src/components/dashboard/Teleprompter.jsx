@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 export default function Teleprompter({ day, onClose }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(2); 
-  const [fontSize, setFontSize] = useState(54); 
+  {/* RESPONSIVE FIX: Mobile view ports par default font size tight rakha taaki wrap na tute */}
+  const [fontSize, setFontSize] = useState(window.innerWidth < 640 ? 28 : 54); 
   const scrollRef = useRef(null);
   const requestRef = useRef();
 
@@ -35,115 +36,123 @@ export default function Teleprompter({ day, onClose }) {
     <div className="fixed inset-0 bg-[#0A0A0A] z-[10000] flex flex-col text-white overflow-hidden font-sans">
       
       {/* 1. TACTICAL FLOATING HEADER */}
-      <div className="p-6 flex justify-between items-center bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/5 z-50">
-        <div className="flex gap-10 items-center">
+      {/* RESPONSIVE FIX: Spacing optimized from p-6 to p-4 for multi-row setups */}
+      <div className="p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-stretch sm:items-center bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/5 z-50 gap-4 flex-shrink-0">
+        <div className="flex flex-col sm:flex-row sm:gap-10 sm:items-center gap-3">
           <div className="space-y-1">
             <div className="text-[10px] font-black uppercase text-[#E63946] tracking-[0.4em] flex items-center gap-2 italic">
                <div className="h-1.5 w-1.5 bg-[#E63946] rounded-full animate-pulse shadow-[0_0_8px_#E63946]" />
                ACTIVE
             </div>
-            <h3 className="text-xl font-[1000] uppercase italic tracking-tighter text-white/90 leading-none">
+            <h3 className="text-lg sm:text-xl font-[1000] uppercase italic tracking-tighter text-white/90 leading-none truncate max-w-xs sm:max-w-none">
               D{day.dayNumber}: <span style={{ color: neon }}>{day.title}</span>
             </h3>
           </div>
 
           {/* Controls - Refined Modules */}
-          <div className="hidden lg:flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10">
-            <div className="flex items-center gap-4 px-4 border-r border-white/5">
-              <span className="text-[8px] font-black uppercase text-white/20 tracking-widest italic">Velocity</span>
-              <div className="flex items-center gap-2">
-                <button onClick={() => setSpeed(s => Math.max(1, s - 1))} className="p-1.5 hover:text-[#E4FF30] transition-colors"><Minus size={14}/></button>
-                <span className="w-4 text-center font-black text-sm" style={{ color: neon }}>{speed}</span>
-                <button onClick={() => setSpeed(s => Math.min(10, s + 1))} className="p-1.5 hover:text-[#E4FF30] transition-colors"><Plus size={14}/></button>
+          {/* RESPONSIVE FIX: Mobile par hidden hatakar grid model p-1 banaya taaki touch screens par targets miss na hon */}
+          <div className="flex items-center justify-between sm:justify-start gap-2 bg-white/5 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl border border-white/10 w-full sm:w-auto">
+            <div className="flex flex-1 sm:flex-none items-center justify-between sm:justify-start gap-2 sm:gap-4 px-3 sm:px-4 border-r border-white/5">
+              <span className="text-[8px] font-black uppercase text-white/20 tracking-widest italic whitespace-nowrap">Velocity</span>
+              <div className="flex items-center gap-1 sm:gap-2">
+                <button type="button" onClick={() => setSpeed(s => Math.max(1, s - 1))} className="p-1.5 hover:text-[#E4FF30] transition-colors"><Minus size={12}/></button>
+                <span className="w-4 text-center font-black text-xs sm:text-sm" style={{ color: neon }}>{speed}</span>
+                <button type="button" onClick={() => setSpeed(s => Math.min(10, s + 1))} className="p-1.5 hover:text-[#E4FF30] transition-colors"><Plus size={12}/></button>
               </div>
             </div>
-            <div className="flex items-center gap-4 px-4">
-              <span className="text-[8px] font-black uppercase text-white/20 tracking-widest italic">Text Size</span>
-              <div className="flex items-center gap-2">
-                <button onClick={() => setFontSize(s => Math.max(30, s - 4))} className="p-1.5 hover:text-[#E4FF30] transition-colors"><Type size={14}/></button>
-                <span className="w-10 text-center font-black text-sm" style={{ color: neon }}>{fontSize}</span>
-                <button onClick={() => setFontSize(s => Math.min(100, s + 4))} className="p-1.5 hover:text-[#E4FF30] transition-colors"><Type size={18}/></button>
+            <div className="flex flex-1 sm:flex-none items-center justify-between sm:justify-start gap-2 sm:gap-4 px-3 sm:px-4">
+              <span className="text-[8px] font-black uppercase text-white/20 tracking-widest italic whitespace-nowrap">Text Size</span>
+              <div className="flex items-center gap-1 sm:gap-2">
+                <button type="button" onClick={() => setFontSize(s => Math.max(16, s - 2))} className="p-1.5 hover:text-[#E4FF30] transition-colors"><Type size={12}/></button>
+                <span className="w-6 sm:w-10 text-center font-black text-xs sm:text-sm" style={{ color: neon }}>{fontSize}</span>
+                <button type="button" onClick={() => setFontSize(s => Math.min(100, s + 2))} className="p-1.5 hover:text-[#E4FF30] transition-colors"><Type size={14}/></button>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex gap-4">
-          <button onClick={handleReset} className="p-3 rounded-2xl border border-white/10 hover:bg-white hover:text-black transition-all">
-            <RotateCcw size={20} strokeWidth={2.5} />
+        {/* Action buttons layout fixed */}
+        <div className="flex gap-3 justify-end flex-shrink-0">
+          <button type="button" onClick={handleReset} className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border border-white/10 hover:bg-white hover:text-black transition-all">
+            <RotateCcw size={16} className="sm:w-[20px] sm:h-[20px]" strokeWidth={2.5} />
           </button>
-          <button onClick={onClose} className="bg-[#E63946] text-white p-3 rounded-2xl hover:scale-105 active:scale-95 transition-all border border-[#E63946] shadow-lg shadow-[#E63946]/20">
-            <X size={20} strokeWidth={3} />
+          <button type="button" onClick={onClose} className="bg-[#E63946] text-white p-2.5 sm:p-3 rounded-xl sm:rounded-2xl hover:scale-105 active:scale-95 transition-all border border-[#E63946] shadow-lg shadow-[#E63946]/20">
+            <X size={16} className="sm:w-[20px] sm:h-[20px]" strokeWidth={3} />
           </button>
         </div>
       </div>
 
-      {/* 2. EYE-LINE READ ZONE - Refined with Glass effect */}
-      <div className="fixed top-1/2 left-0 right-0 h-[140px] -translate-y-1/2 pointer-events-none z-20">
+      {/* 2. EYE-LINE READ ZONE */}
+      {/* RESPONSIVE FIX: Mobile bounds adjustments preventing marker clipping */}
+      <div className="fixed top-1/2 left-0 right-0 h-[100px] sm:h-[140px] -translate-y-1/2 pointer-events-none z-20">
         <div className="absolute inset-0 bg-white/[0.02] border-y border-white/5 backdrop-blur-[2px]" />
         
         {/* Eye-line Markers */}
-        <div className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col items-center gap-1 opacity-20">
+        <div className="absolute left-3 sm:left-8 top-1/2 -translate-y-1/2 flex flex-col items-center gap-1 opacity-20">
            <div className="w-1 h-1 bg-[#E4FF30] rounded-full" />
-           <div className="w-[1px] h-10 bg-[#E4FF30]" />
+           <div className="w-[1px] h-6 sm:h-10 bg-[#E4FF30]" />
            <div className="w-1 h-1 bg-[#E4FF30] rounded-full" />
         </div>
         
-        <div className="absolute right-8 top-1/2 -translate-y-1/2 flex items-center gap-3">
-           <span className="text-[8px] font-black uppercase text-[#E4FF30] tracking-[0.6em] opacity-30 italic">Focus Anchor</span>
+        <div className="absolute right-3 sm:right-8 top-1/2 -translate-y-1/2 flex items-center gap-3">
+           <span className="text-[7px] sm:text-[8px] font-black uppercase text-[#E4FF30] tracking-[0.4em] sm:tracking-[0.6em] opacity-30 italic">Focus Anchor</span>
         </div>
       </div>
 
       {/* 3. READING ENGINE */}
+      {/* RESPONSIVE FIX: Side padding squeezed from 20% to tight fractions on phones to expand visual feed area */}
       <div 
         ref={scrollRef}
-        className="flex-1 overflow-y-auto scrollbar-hide px-8 md:px-[20%] text-center selection:bg-[#E4FF30] selection:text-black"
+        className="flex-1 overflow-y-auto scrollbar-hide px-4 sm:px-[15%] md:px-[20%] text-center selection:bg-[#E4FF30] selection:text-black z-10"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <div 
           style={{ fontSize: `${fontSize}px` }} 
-          className="font-black leading-[1.4] uppercase tracking-tight py-[50vh] transition-all"
+          className="font-black leading-[1.4] uppercase tracking-tight py-[45vh] transition-all"
         >
-          {/* HOOK MODULE - Rounded & Refined */}
+          {/* HOOK MODULE */}
+          {/* RESPONSIVE FIX: Sized card padding down drastically from px-12 py-8 to px-6 py-5 */}
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-block bg-[#008BFF] text-white px-12 py-8 mb-60 rounded-[2.5rem] border-[4px] border-white/10 shadow-2xl relative"
+            className="inline-block bg-[#008BFF] text-white px-6 sm:px-12 py-5 sm:py-8 mb-40 sm:mb-60 rounded-2xl sm:rounded-[2.5rem] border-[3px] sm:border-[4px] border-white/10 shadow-2xl relative max-w-full"
           >
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-white text-[#008BFF] px-4 py-1 rounded-full text-[9px] font-black tracking-widest italic shadow-lg">
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white text-[#008BFF] px-3 sm:px-4 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[9px] font-black tracking-widest italic shadow-lg whitespace-nowrap">
                 HOOK START
             </div>
-            <div className="text-[10px] not-italic font-black mb-3 opacity-60 tracking-[0.4em] flex items-center justify-center gap-2">
+            <div className="text-[8px] sm:text-[10px] not-italic font-black mb-2 sm:mb-3 opacity-60 tracking-[0.3em] sm:tracking-[0.4em] flex items-center justify-center gap-2">
                 <Zap size={10} fill="currentColor" /> SYSTEM PRIORITY
             </div>
             {day.hook}
           </motion.div>
 
           {/* SCRIPT BODY */}
-          <div className="mb-[60vh] opacity-90 text-white/95">
+          <div className="mb-[50vh] opacity-90 text-white/95 break-words">
             {day.script}
           </div>
 
-          <div className="text-[#E63946] text-4xl font-black italic tracking-[0.8em] opacity-20 pb-40">
+          <div className="text-[#E63946] text-2xl sm:text-4xl font-black italic tracking-[0.4em] sm:tracking-[0.8em] opacity-20 pb-40">
             FINISH LINE
           </div>
         </div>
       </div>
 
-      {/* 4. MASTER CONTROLLER - Rounded Sleek Style */}
-      <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50">
+      {/* 4. MASTER CONTROLLER */}
+      {/* RESPONSIVE FIX: Bottom layout padded cleanly, py reduced from py-6 to py-4 to lift away from text collisions */}
+      <div className="fixed bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 z-50 max-w-full">
         <button 
+          type="button"
           onClick={() => setIsPlaying(!isPlaying)}
-          className={`flex items-center gap-5 px-12 py-6 rounded-full border border-white/10 transition-all transform active:scale-90 shadow-2xl ${
+          className={`flex items-center gap-3 sm:gap-5 px-8 sm:px-12 py-3.5 sm:py-6 rounded-full border border-white/10 transition-all transform active:scale-90 shadow-2xl ${
             isPlaying 
             ? 'bg-white text-[#0A0A0A]' 
             : 'bg-[#E4FF30] text-[#362F4F] shadow-[#E4FF30]/30'
           }`}
         >
           <div className="relative">
-            {isPlaying ? <Pause size={32} fill="currentColor" /> : <Play size={32} fill="currentColor" className="ml-1" />}
+            {isPlaying ? <Pause size={20} className="sm:w-[32px] sm:h-[32px]" fill="currentColor" /> : <Play size={20} className="sm:w-[32px] sm:h-[32px] ml-0.5" fill="currentColor" />}
           </div>
-          <span className="font-black uppercase tracking-[0.3em] text-xs italic">
+          <span className="font-black uppercase tracking-[0.25em] sm:tracking-[0.3em] text-[10px] sm:text-xs italic whitespace-nowrap">
             {isPlaying ? 'PAUSE' : 'PLAY'}
           </span>
         </button>

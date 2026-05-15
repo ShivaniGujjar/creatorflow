@@ -5,27 +5,35 @@ const connectDB = require('./config/database');
 
 dotenv.config();
 
-// Connect to Database
 connectDB();
 
 const app = express();
 
-// 1. UPDATED CORS: Deployment ke baad Vercel ka link yahan daal dena
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:3000'
+];
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173", // Local dev ke liye explicit address
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], // "PATCH" aur "OPTIONS" yahan hone chahiye
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   credentials: true,
-  allowedHeaders: ["Content-Type", "x-auth-token"] // Headers bhi define kar do safety ke liye
+  allowedHeaders: ["Content-Type", "x-auth-token", "Authorization"]
 }));
 
 app.use(express.json());
 
-// Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/roadmaps', require('./routes/roadmapRoutes')); 
 
-// 2. HEALTH CHECK: Render iska use karke check karta hai ki server up hai ya nahi
 app.get('/', (req, res) => {
   res.status(200).json({ 
     status: 'Operational', 

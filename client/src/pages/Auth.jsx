@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Zap, ShieldCheck, UserPlus, KeyRound } from 'lucide-react';
 
-// Vercel deployment ke liye Base URL dynamic hona chahiye
-// Isko check kar lo ki variable ke end mein slash na ho aur string sahi handle ho
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+// AUTO-SWITCHING LOGIC: `.env` cache ka baap bhi ab Render par nahi bhaag payega local par!
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE_URL = isLocal 
+  ? 'http://localhost:5000' 
+  : (import.meta.env.VITE_API_URL || 'https://creatorflow-gbci.onrender.com').replace(/\/$/, '');
 
 export default function Auth({ onAuthSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -15,14 +17,11 @@ export default function Auth({ onAuthSuccess }) {
     e.preventDefault();
     setLoading(true);
     
-    // Slash explicitely check kar lo endpoints ke aage
     const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
     
     try {
-      // Dynamic URL construct
       const res = await axios.post(`${API_BASE_URL}${endpoint}`, formData);
       
-      // Tokens and user data persistence
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       
@@ -43,11 +42,9 @@ export default function Auth({ onAuthSuccess }) {
       <div className="relative w-full max-w-md">
         
         {/* Main Auth Card */}
-        {/* RESPONSIVE FIX: Mobile par p-6 aur rounded-3xl, desktop par back to p-12 aur rounded-[2.5rem] */}
         <div className="relative w-full bg-white border border-gray-100 rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-12 flex flex-col items-center shadow-[0_40px_80px_-20px_rgba(54,47,79,0.1)] transition-all">
           
           {/* Header Section */}
-          {/* RESPONSIVE FIX: Spacing and text dynamic scaling */}
           <div className="w-full mb-6 sm:mb-10 text-center">
             <div className="inline-flex bg-[#E4FF30] text-[#362F4F] p-3 sm:p-4 rounded-xl sm:rounded-2xl mb-4 sm:mb-5 shadow-sm">
               {isLogin ? <ShieldCheck size={24} className="sm:w-[28px] sm:h-[28px]" strokeWidth={2.5} /> : <UserPlus size={24} className="sm:w-[28px] sm:h-[28px]" strokeWidth={2.5} />}
@@ -60,7 +57,6 @@ export default function Auth({ onAuthSuccess }) {
             </h2>
           </div>
 
-          {/* RESPONSIVE FIX: Spacing tightened from space-y-6 to space-y-4 for mobile viewports */}
           <form onSubmit={handleSubmit} className="w-full space-y-4 sm:space-y-6">
             {!isLogin && (
               <div className="space-y-1.5">
@@ -99,7 +95,6 @@ export default function Auth({ onAuthSuccess }) {
               />
             </div>
 
-            {/* RESPONSIVE FIX: Button scaling padding for mobile fingers */}
             <button 
               disabled={loading}
               className={`w-full bg-[#362F4F] text-white py-4 sm:py-5 rounded-xl sm:rounded-2xl font-[1000] uppercase italic tracking-widest shadow-xl shadow-[#362F4F]/20 hover:bg-[#261CC1] hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3 mt-4 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
@@ -109,8 +104,6 @@ export default function Auth({ onAuthSuccess }) {
             </button>
           </form>
 
-          {/* Toggle Button */}
-          {/* RESPONSIVE FIX: Balanced top margin */}
           <button 
             type="button"
             onClick={() => setIsLogin(!isLogin)}
@@ -121,7 +114,6 @@ export default function Auth({ onAuthSuccess }) {
         </div>
       </div>
       
-      {/* Sidebar Metadata Overlay */}
       <div className="fixed bottom-8 right-8 hidden md:block opacity-20">
         <div className="text-[10px] font-black uppercase tracking-[0.6em] text-[#362F4F]">CreatorFlow Security v3.1</div>
       </div>
